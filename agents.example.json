@@ -1,0 +1,9 @@
+[
+  {
+    "name": "meu_agente",
+    "url": "http://127.0.0.1:9000/run",
+    "description": "Exemplo de agente externo",
+    "input_schema": {"type": "object", "required": ["task"],
+                     "properties": {"task": {"type": "string"}}}
+  }
+]
