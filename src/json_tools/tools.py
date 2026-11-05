@@ -75,3 +75,22 @@ register(Tool(
     "json_validate", "Valida um valor JSON contra um JSON Schema.",
     {"type": "object", "required": ["data", "schema"],
      "properties": {"schema": {"type": "object"}}}, _validate_tool))
+
+
+def _get_tool(args: dict) -> Any:
+    """Acessa valor por caminho com pontos, ex.: "a.b.0.c"."""
+    cur = args["data"]
+    for part in filter(None, args["path"].split(".")):
+        if isinstance(cur, list):
+            cur = cur[int(part)]
+        elif isinstance(cur, dict):
+            cur = cur[part]
+        else:
+            raise KeyError(part)
+    return cur
+
+
+register(Tool(
+    "json_get", "Obtém um valor de um JSON por caminho (ex.: a.b.0.c).",
+    {"type": "object", "required": ["data", "path"],
+     "properties": {"path": {"type": "string"}}}, _get_tool))

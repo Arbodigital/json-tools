@@ -66,3 +66,18 @@ def test_adapter_rejects_bad_url():
     except ValueError:
         return
     raise AssertionError
+
+
+def test_json_get():
+    d = {"a": {"b": [{"c": 5}]}}
+    assert tools.call_tool("json_get", {"data": d, "path": "a.b.0.c"})["result"] == 5
+    assert not tools.call_tool("json_get", {"data": d, "path": "a.x"})["ok"]
+
+
+def test_cli_agents_flag(tmp_path, capsys):
+    f = tmp_path / "ag.json"
+    f.write_text(json.dumps([{"name": "ag1", "url": "http://127.0.0.1:1/x"}]))
+    assert main(["--agents", str(f), "tools"]) == 0
+    assert "ag1" in capsys.readouterr().out
+    tools.REGISTRY.pop("ag1", None)
+    assert main(["--agents", str(tmp_path / "nope.json"), "tools"]) == 1

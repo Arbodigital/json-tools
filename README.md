@@ -44,7 +44,7 @@ O `validate` suporta um subconjunto de JSON Schema: `type`, `enum`,
 
 ## Interface única de ferramentas
 
-Toda ferramenta (`json_parse`, `json_format`, `json_validate`) tem nome,
+Toda ferramenta (`json_parse`, `json_format`, `json_validate`, `json_get`) tem nome,
 descrição, `inputSchema` e responde `{"ok": true, "result": ...}` ou
 `{"ok": false, "error": ...}`. Os argumentos são validados pelo esquema antes
 da execução. Veja `src/json_tools/tools.py`.
@@ -74,8 +74,11 @@ register_http_agent("meu_agente", "http://127.0.0.1:9000/run")
 load_agents_file("agents.example.json")
 ```
 Depois ele aparece em `/tools` e no MCP, e pode ser chamado pela mesma
-interface. Para usar isso nos comandos da CLI, importe seu módulo de registro
-antes de chamar `main()`.
+interface. Na CLI, use a opção global `--agents`:
+```
+json-tools --agents agents.example.json tools
+json-tools --agents agents.json serve-mcp
+```
 
 ## Modelos locais (opcional)
 

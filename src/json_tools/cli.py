@@ -10,6 +10,8 @@ from .core import read_json, validate
 
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(prog="json-tools")
+    p.add_argument("--agents", metavar="ARQUIVO",
+                   help="JSON com agentes externos a registrar como ferramentas")
     sub = p.add_subparsers(dest="cmd", required=True)
 
     v = sub.add_parser("validate", help="valida arquivo JSON (opcional --schema)")
@@ -40,6 +42,14 @@ def main(argv=None) -> int:
     a.add_argument("--url")
 
     args = p.parse_args(argv)
+
+    if args.agents:
+        from .adapters import load_agents_file
+        try:
+            load_agents_file(args.agents)
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            print(f"erro ao carregar agentes: {exc}", file=sys.stderr)
+            return 1
 
     if args.cmd == "validate":
         try:
